@@ -1,0 +1,159 @@
+########################################## AUGUST, 5 2026 ##########################################
+REQUESTS:
+
+DONE - DDETOS report should generate all not just expired 
+
+
+UPDATED FILES:
+
+app\Http\Controllers\ReportsController.php
+resources\views\layouts\sidebar.blade.php
+routes\web.php
+
+
+
+NEW FILES:
+
+resources\views\pages\reports\contractor-all-ddetos.blade.php
+resources\views\pages\reports\contractor-all-ddetos-export.blade.php
+
+
+
+
+
+########################################## JUNE 26, 2026 ##########################################
+REQUESTS:
+
+DONE - Transaction number retains on the last running number and still captures the same number the next day.
+DONE - Put ddetos on filter and show the ddetos transaction on list
+DONE - Include DDETOS data and is included on exported to excel export.
+DONE - DDETOS Report not showing anything data.
+        FEEDBACK: Only shows expired DDETOS, if not expired then no items will show 
+
+
+
+UPDATED FILES:
+
+app\Http\Controllers\TransactionController.php
+resources\views\pages\transactions\transactions.blade.php
+resources\views\pages\reports\transactions.blade.php
+
+
+VAPT REVERTED
+
+public\themes\metronic\assets\global\plugins\jquery-1.11.0.min.js
+public\themes\metronic\assets\global\plugins\bootstrap\js\bootstrap.min.js
+
+
+
+
+
+
+
+
+########################################## MAY 19, 2026 ##########################################
+VAPT
+
+public\themes\metronic\assets\global\plugins\jquery-1.11.0.min.js
+public\themes\metronic\assets\global\plugins\bootstrap\js\bootstrap.min.js
+
+
+
+
+########################################## MARCH 31, 2026 ##########################################
+REQUESTS:
+
+in the add new trans 
+- the expired ddetos select box will show reference nos based on the team leader/contractor and location selected
+
+- upon selection there should be viewing what item it is then if there is we can view and extend committed date of that item to proceed with another item to add
+
+- reports must generate excel file of ddetos per contractor
+
+
+UPDATED FILES:
+
+app\Transaction.php
+app\TransactionDetail.php
+app\Http\Controllers\TransactionController.php
+app\Http\Controllers\ContractorController.php
+app\Http\Controllers\ReportsController.php
+
+resources\views\pages\transactions\transactions.blade.php
+resources\views\pages\transactions\create.blade.php
+resources\views\pages\transactions\transaction-edit.blade.php
+resources\views\pages\transactions\transaction-print.blade.php
+resources\views\pages\reports\transactions.blade.php
+
+routes\api.php
+routes\web.php
+
+
+
+NEW FILES:
+
+resources\views\pages\reports\contractor-expired-ddetos.blade.php
+resources\views\pages\reports\contractor-expired-ddetos-export.blade.php
+
+
+
+QUERY:
+
+ALTER TABLE transactions 
+ADD 
+    hasDDETOS INTEGER DEFAULT 0,
+    DDETOSexpiryDate DATE NULL, 
+    DDETOSrefNo NVARCHAR(MAX) NULL,
+    DDETOScommittedDate DATE NULL,
+    DDETOSpreparedBy NVARCHAR(MAX) NULL,
+    DDETOSpreparedByDesignation NVARCHAR(MAX) NULL,
+    DDETOSnotedBy NVARCHAR(MAX) NULL,
+    DDETOSnotedByDesignation NVARCHAR(MAX) NULL,
+    DDETOSstatus NVARCHAR(MAX) DEFAULT 'OPEN';
+
+
+
+ALTER TABLE transaction_details
+ADD 
+    isDDETOS INTEGER DEFAULT 0,
+    DDETOSrefNo NVARCHAR(MAX) NULL,
+    DDETOScommittedDate DATE NULL,
+    DDETOSstatus NVARCHAR(MAX) DEFAULT 'OPEN',
+    qty_closed DECIMAL (16,2) DEFAULT 0;
+
+
+
+
+
+
+
+
+
+FOR TEST
+
+ALTER TABLE transactions 
+DROP COLUMN DDETOSexpiryDate, DDETOSInfo, DDETOSrefNo, DDETOScommittedDate, DDETOSpreparedBy, DDETOSpreparedByDesignation, DDETOSnotedBy, DDETOSnotedByDesignation
+
+
+
+
+
+ALTER TABLE transactions 
+ADD 
+    DDETOSstatus NVARCHAR(MAX) DEFAULT 'OPEN';
+
+ALTER TABLE transaction_details 
+ADD 
+    isDDETOS INTEGER DEFAULT 0,
+    DDETOSstatus NVARCHAR(MAX) DEFAULT 'OPEN';
+
+
+
+
+
+ALTER TABLE transaction_details 
+ADD 
+    qty_closed DECIMAL (16,2) DEFAULT 0;
+
+    
+update transaction_details set qty_closed = 0.00
